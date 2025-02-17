@@ -1171,6 +1171,7 @@ def main():
   if args.gradient_checkpointing:
     unet.enable_gradient_checkpointing()
 
+  # not used in DPOK
   if args.scale_lr:
     args.learning_rate = (
         args.learning_rate
@@ -1272,7 +1273,7 @@ def main():
 
   # Train!
   total_batch_size = (
-      args.train_batch_size
+      args.p_batch_size
       * accelerator.num_processes
       * args.gradient_accumulation_steps
   )
@@ -1301,7 +1302,7 @@ def main():
   logger.info("***** Running training *****")
   logger.info(f"  Num Epochs = {args.num_train_epochs}")
   logger.info(
-      f"  Instantaneous batch size per device = {args.train_batch_size}"
+      f"  Instantaneous batch size per device = {args.p_batch_size}"
   )
   logger.info(
       "  Total train batch size (w. parallel, distributed & accumulation) ="
