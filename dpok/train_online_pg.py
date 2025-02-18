@@ -1330,18 +1330,20 @@ def main():
 
   state_dict = {}
   state_dict["prompt"] = []
-  state_dict["state"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
-  state_dict["next_state"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
-  state_dict["timestep"] = _map_cpu(torch.LongTensor())
+  # state_dict["state"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
+  # state_dict["next_state"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
+  # state_dict["timestep"] = _map_cpu(torch.LongTensor())
   state_dict["final_reward"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
-  state_dict["unconditional_prompt_embeds"] = _map_cpu(
-      torch.FloatTensor().to(weight_dtype)
-  )
-  state_dict["guided_prompt_embeds"] = _map_cpu(
-      torch.FloatTensor().to(weight_dtype)
-  )
-  state_dict["txt_emb"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
-  state_dict["log_prob"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
+  # state_dict["unconditional_prompt_embeds"] = _map_cpu(
+      # torch.FloatTensor().to(weight_dtype)
+  # )
+  # state_dict["guided_prompt_embeds"] = _map_cpu(
+  #     torch.FloatTensor().to(weight_dtype)
+  # )
+  # state_dict["txt_emb"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
+  # state_dict["log_prob"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
+  state_dict["kl_sum"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
+
 
   if args.reward_flag == 0:
     calculate_reward = functools.partial(
