@@ -819,7 +819,7 @@ def _save_model(args, count, is_ddp, accelerator, unet):
     unet_to_save.save_attn_procs(save_path)
 
 
-def _collect_rollout(args, pipe, is_ddp, batch, calculate_reward, state_dict):
+def _collect_rollout(args, pipe, unet_copy, is_ddp, batch, calculate_reward, state_dict):
   """Collects trajectories."""
   for _ in range(args.g_step):
     # samples for each prompt
@@ -828,45 +828,42 @@ def _collect_rollout(args, pipe, is_ddp, batch, calculate_reward, state_dict):
     with torch.no_grad():
       (
           image,
-          latents_list,
-          unconditional_prompt_embeds,
-          guided_prompt_embeds,
-          log_prob_list,
-          _,
-      ) = pipe.forward_collect_traj_ddim(prompt=batch, is_ddp=is_ddp)
+          kl_sum,
+      ) = pipe.forward_collect_traj_ddim(prompt=batch, is_ddp=is_ddp, unet_copy=unet_copy, soft_reward=True)
       reward_list = []
       txt_emb_list = []
       for i in range(len(batch)):
-        reward, txt_emb = calculate_reward(image[i], batch[i])
+        reward, _ = calculate_reward(image[i], batch[i])
         reward_list.append(reward)
-        txt_emb_list.append(txt_emb)
+        # txt_emb_list.append(txt_emb)
       reward_list = torch.stack(reward_list).detach().cpu()
-      txt_emb_list = torch.stack(txt_emb_list).detach().cpu()
+      # txt_emb_list = torch.stack(txt_emb_list).detach().cpu()
+      
       # store the rollout data
-      for i in range(len(latents_list) - 1):
-        # deal with a batch of data in each step i
-        state_dict["prompt"].extend(batch)
-        state_dict["state"] = torch.cat((state_dict["state"], latents_list[i]))
-        state_dict["next_state"] = torch.cat(
-            (state_dict["next_state"], latents_list[i + 1])
-        )
-        state_dict["timestep"] = torch.cat(
-            (state_dict["timestep"], torch.LongTensor([i] * len(batch)))
-        )
-        state_dict["final_reward"] = torch.cat(
-            (state_dict["final_reward"], reward_list)
-        )
-        state_dict["unconditional_prompt_embeds"] = torch.cat((
-            state_dict["unconditional_prompt_embeds"],
-            unconditional_prompt_embeds,
-        ))
-        state_dict["guided_prompt_embeds"] = torch.cat(
-            (state_dict["guided_prompt_embeds"], guided_prompt_embeds)
-        )
-        state_dict["txt_emb"] = torch.cat((state_dict["txt_emb"], txt_emb_list))
-        state_dict["log_prob"] = torch.cat(
-            (state_dict["log_prob"], log_prob_list[i])
-        )
+      # for i in range(len(latents_list) - 1):
+      #   # deal with a batch of data in each step i
+      #   state_dict["prompt"].extend(batch)
+      #   state_dict["state"] = torch.cat((state_dict["state"], latents_list[i]))
+      #   state_dict["next_state"] = torch.cat(
+      #       (state_dict["next_state"], latents_list[i + 1])
+      #   )
+      #   state_dict["timestep"] = torch.cat(
+      #       (state_dict["timestep"], torch.LongTensor([i] * len(batch)))
+      #   )
+      #   state_dict["final_reward"] = torch.cat(
+      #       (state_dict["final_reward"], reward_list)
+      #   )
+      #   state_dict["unconditional_prompt_embeds"] = torch.cat((
+      #       state_dict["unconditional_prompt_embeds"],
+      #       unconditional_prompt_embeds,
+      #   ))
+      #   state_dict["guided_prompt_embeds"] = torch.cat(
+      #       (state_dict["guided_prompt_embeds"], guided_prompt_embeds)
+      #   )
+      #   state_dict["txt_emb"] = torch.cat((state_dict["txt_emb"], txt_emb_list))
+      #   state_dict["log_prob"] = torch.cat(
+      #       (state_dict["log_prob"], log_prob_list[i])
+      #   )
       del (
           image,
           latents_list,
@@ -1385,11 +1382,9 @@ def main():
     batch = _get_batch(
         data_iter_loader, _my_data_iterator, prompt_list, args, accelerator
     )
-    _collect_rollout(args, pipe, is_ddp, batch, calculate_reward, state_dict)
-    _trim_buffer(buffer_size, state_dict)
-    if accelerator.is_main_process:
-      print("state_dict length", state_dict["state"].shape)
-      print("final reward", state_dict["final_reward"])
+    _collect_rollout(args, pipe, unet_copy, is_ddp, batch, calculate_reward, state_dict)
+    # _trim_buffer(buffer_size, state_dict)
+
 
     if args.v_flag == 1:
       tot_val_loss = 0
