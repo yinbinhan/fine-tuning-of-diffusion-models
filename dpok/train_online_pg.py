@@ -1385,6 +1385,9 @@ def main():
     )
     _collect_rollout(args, pipe, is_ddp, batch, calculate_reward, state_dict)
     _trim_buffer(buffer_size, state_dict)
+    if accelerator.is_main_process:
+      print("state_dict length", state_dict["state"].shape)
+      print("final reward", state_dict["final_reward"])
 
     if args.v_flag == 1:
       tot_val_loss = 0
