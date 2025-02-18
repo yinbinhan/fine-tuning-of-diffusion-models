@@ -828,12 +828,8 @@ def _collect_rollout(args, pipe, is_ddp, batch, calculate_reward, state_dict):
     with torch.no_grad():
       (
           image,
-          latents_list,
-          unconditional_prompt_embeds,
-          guided_prompt_embeds,
-          log_prob_list,
-          _,
-      ) = pipe.forward_collect_traj_ddim(prompt=batch, is_ddp=is_ddp)
+          kl_sum,
+      ) = pipe.forward_collect_traj_ddim(prompt=batch, is_ddp=is_ddp, unet_copy=unet_copy)
       reward_list = []
       txt_emb_list = []
       for i in range(len(batch)):
@@ -1386,10 +1382,8 @@ def main():
         data_iter_loader, _my_data_iterator, prompt_list, args, accelerator
     )
     _collect_rollout(args, pipe, is_ddp, batch, calculate_reward, state_dict)
-    _trim_buffer(buffer_size, state_dict)
-    if accelerator.is_main_process:
-      print("state_dict length", state_dict["state"].shape)
-      print("final reward", state_dict["final_reward"])
+    # _trim_buffer(buffer_size, state_dict)
+
 
     if args.v_flag == 1:
       tot_val_loss = 0

@@ -211,9 +211,9 @@ class StableDiffusionPipelineExtended(StableDiffusionPipeline):
         generator,
         latents,
     )
-    latents_list = []
-    log_prob_list = []
-    latents_list.append(latents.detach().clone().cpu())
+    # latents_list = []
+    # log_prob_list = []
+    # latents_list.append(latents.detach().clone().cpu())
     # 6. Prepare extra step kwargs.
     # TODO: Logic should ideally just be moved out of the pipeline  # pylint: disable=g-bad-todo
     extra_step_kwargs = self.prepare_extra_step_kwargs(generator, eta)
@@ -259,38 +259,39 @@ class StableDiffusionPipelineExtended(StableDiffusionPipeline):
               noise_pred_text - noise_pred_uncond
           )
 
-        # now we get the predicted noise
-        unsqueeze3x = lambda x: x[Ellipsis, None, None, None]
-        unet_t = unsqueeze3x(torch.tensor([t])).to(noise_pred.device)
-        # compute the previous noisy sample x_t -> x_t-1
-        if soft_reward:
-          prev_latents = latents.clone()
+        # # now we get the predicted noise
+        # unsqueeze3x = lambda x: x[Ellipsis, None, None, None]
+        # unet_t = unsqueeze3x(torch.tensor([t])).to(noise_pred.device)
+        # # compute the previous noisy sample x_t -> x_t-1
+        # if soft_reward:
+        #   prev_latents = latents.clone()
 
-        latents, log_prob = self.scheduler.step_logprob(
-            noise_pred, unet_t, latents, **extra_step_kwargs
-        )
-        latents = latents.prev_sample
-        latents = latents.to(prompt_embeds.dtype)
-        latents_list.append(latents.detach().clone().cpu())
-        log_prob_list.append(log_prob.detach().clone().cpu())
+        # latents, log_prob = self.scheduler.step_logprob(
+        #     noise_pred, unet_t, latents, **extra_step_kwargs
+        # )
+        # latents = latents.prev_sample
+        # latents = latents.to(prompt_embeds.dtype)
+        # latents_list.append(latents.detach().clone().cpu())
+        # log_prob_list.append(log_prob.detach().clone().cpu())
 
-        if soft_reward:
-          unet_times = unsqueeze3x(torch.tensor([t] * noise_pred.shape[0])).to(
-              noise_pred.device
-          )
-          old_log_prob = (
-              self.scheduler.step_forward_logprob(
-                  noise_pred,
-                  unet_times,
-                  prev_latents,
-                  latents,
-                  **extra_step_kwargs
-              )
-              .detach()
-              .cpu()
-          )
+        # if soft_reward:
+        #   unet_times = unsqueeze3x(torch.tensor([t] * noise_pred.shape[0])).to(
+        #       noise_pred.device
+        #   )
+        #   old_log_prob = (
+        #       self.scheduler.step_forward_logprob(
+        #           noise_pred,
+        #           unet_times,
+        #           prev_latents,
+        #           latents,
+        #           **extra_step_kwargs
+        #       )
+        #       .detach()
+        #       .cpu()
+        #   )
 
-          kl_list.append((log_prob - old_log_prob).detach().clone().cpu())
+          kl_regularizer = (noise_pred - old_noise_pred) ** 2
+          kl_list.append(kl_regularizer.detach().clone().cpu())
 
         # call the callback, if provided
         if i == len(timesteps) - 1 or (
@@ -321,27 +322,28 @@ class StableDiffusionPipelineExtended(StableDiffusionPipeline):
     ):
       self.final_offload_hook.offload()
 
-    unconditional_prompt_embeds, guided_prompt_embeds = prompt_embeds.chunk(2)
+    # unconditional_prompt_embeds, guided_prompt_embeds = prompt_embeds.chunk(2)
 
     if soft_reward:
       kl_sum = 0
-      kl_path = []
+      # kl_path = []
       for i in range(len(kl_list)):
         kl_sum += kl_list[i]
-      kl_path.append(kl_sum.clone())
-      for i in range(1, len(kl_list)):
-        kl_sum -= kl_list[i - 1]
-        kl_path.append(kl_sum.clone())
+      # kl_path.append(kl_sum.clone())
+      # for i in range(1, len(kl_list)):
+      #   kl_sum -= kl_list[i - 1]
+        # kl_path.append(kl_sum.clone())
     else:
-      kl_path = None
+      # kl_path = None
+      kl_sum = 0
 
     return (
         image,
-        latents_list,
-        unconditional_prompt_embeds.detach().cpu(),
-        guided_prompt_embeds.detach().cpu(),
-        log_prob_list,
-        kl_path,
+        # latents_list,
+        # unconditional_prompt_embeds.detach().cpu(),
+        # guided_prompt_embeds.detach().cpu(),
+        # log_prob_list,
+        kl_sum,
     )
 
   # Feed transitions pairs and old model
