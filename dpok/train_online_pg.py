@@ -829,7 +829,11 @@ def _collect_rollout(args, pipe, unet_copy, is_ddp, batch, calculate_reward, sta
       (
           image,
           kl_sum,
+<<<<<<< HEAD
       ) = pipe.forward_collect_traj_ddim(prompt=batch, is_ddp=is_ddp, unet_copy=unet_copy, soft_reward=True)
+=======
+      ) = pipe.forward_collect_traj_ddim(prompt=batch, is_ddp=is_ddp, unet_copy=unet_copy)
+>>>>>>> b33fdcff831035ead38ba2187b36b4836b186767
       reward_list = []
       txt_emb_list = []
       for i in range(len(batch)):
@@ -1382,7 +1386,11 @@ def main():
     batch = _get_batch(
         data_iter_loader, _my_data_iterator, prompt_list, args, accelerator
     )
+<<<<<<< HEAD
     _collect_rollout(args, pipe, unet_copy, is_ddp, batch, calculate_reward, state_dict)
+=======
+    _collect_rollout(args, pipe, is_ddp, batch, calculate_reward, state_dict)
+>>>>>>> b33fdcff831035ead38ba2187b36b4836b186767
     # _trim_buffer(buffer_size, state_dict)
 
 
