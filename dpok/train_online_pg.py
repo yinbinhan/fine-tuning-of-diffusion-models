@@ -1382,11 +1382,7 @@ def main():
     batch = _get_batch(
         data_iter_loader, _my_data_iterator, prompt_list, args, accelerator
     )
-<<<<<<< HEAD
     _collect_rollout(args, pipe, unet_copy, is_ddp, batch, calculate_reward, state_dict)
-=======
-    _collect_rollout(args, pipe, is_ddp, batch, calculate_reward, state_dict)
->>>>>>> b33fdcff831035ead38ba2187b36b4836b186767
     # _trim_buffer(buffer_size, state_dict)
 
 
