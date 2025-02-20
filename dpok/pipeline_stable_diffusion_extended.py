@@ -335,10 +335,6 @@ class StableDiffusionPipelineExtended(StableDiffusionPipeline):
         # kl_path.append(kl_sum.clone())
     else:
       # kl_path = None
-<<<<<<< HEAD
-=======
-      # test
->>>>>>> b33fdcff831035ead38ba2187b36b4836b186767
       kl_sum = 0
 
     return (
