@@ -972,7 +972,7 @@ def _train_policy_func(
           batch_txt_emb.cuda(),
           batch_timestep.cuda()).reshape([args.p_batch_size, 1])
     else:
-      adv = reward_list.cuda().reshape([args.p_batch_size, 1])
+      adv = reward_list.cuda()
   # ratio = torch.exp(log_prob - batch_log_prob.cuda())
   # ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
   loss = (
@@ -981,13 +981,22 @@ def _train_policy_func(
       # * ratio.float().reshape([args.p_batch_size, 1])
   ).mean()
   if count > args.kl_warmup:
-    loss += args.kl_weight * kl_regularizer.mean()
+    loss += args.kl_weight * kl_sum.mean()
   loss = loss / (args.gradient_accumulation_steps)
   accelerator.backward(loss)
   # logging
   tpfdata.tot_ratio += ratio.mean().item() / policy_steps
-  tpfdata.tot_kl += kl_regularizer.mean().item() / policy_steps
+  tpfdata.tot_kl += kl_sum.mean().item() / policy_steps
   tpfdata.tot_p_loss += loss.item() / policy_steps
+
+  del (
+      image,
+      reward_list,
+      reward,
+      kl_sum,
+      adv,
+  )
+  torch.cuda.empty_cache()
 
 
 def main():
