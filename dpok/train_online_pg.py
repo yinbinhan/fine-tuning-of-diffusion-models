@@ -932,11 +932,11 @@ def _train_policy_func(
         image,
         kl_sum,
     ) = pipe.forward_collect_traj_ddim(prompt=batch, is_ddp=is_ddp, unet_copy=unet_copy, soft_reward=True)
-      reward_list = []
-      for i in range(len(batch)):
-        reward, _ = calculate_reward(image[i], batch[i])
-        reward_list.append(reward)
-      reward_list = torch.stack(reward_list)
+    reward_list = []
+    for i in range(len(batch)):
+      reward, _ = calculate_reward(image[i], batch[i])
+      reward_list.append(reward)
+    reward_list = torch.stack(reward_list)
   #   indices = get_random_indices(
   #       state_dict["state"].shape[0], args.p_batch_size
   #   )
