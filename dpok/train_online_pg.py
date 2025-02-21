@@ -919,6 +919,7 @@ def _train_policy_func(
     pipe,
     unet_copy,
     is_ddp,
+    batch,
     count,
     policy_steps,
     accelerator,
@@ -927,47 +928,56 @@ def _train_policy_func(
 ):
   """Trains the policy function."""
   with torch.no_grad():
-    indices = get_random_indices(
-        state_dict["state"].shape[0], args.p_batch_size
-    )
-    batch_state = state_dict["state"][indices]
-    batch_next_state = state_dict["next_state"][indices]
-    batch_timestep = state_dict["timestep"][indices]
-    batch_final_reward = state_dict["final_reward"][indices]
-    batch_unconditional_prompt_embeds = state_dict[
-        "unconditional_prompt_embeds"
-    ][indices]
-    batch_guided_prompt_embeds = state_dict["guided_prompt_embeds"][indices]
-    batch_promt_embeds = torch.cat(
-        [batch_unconditional_prompt_embeds, batch_guided_prompt_embeds]
-    )
-    batch_txt_emb = state_dict["txt_emb"][indices]
-    batch_log_prob = state_dict["log_prob"][indices]
-  # calculate loss from the custom function
-  # (modified in pipeline_stable_diffusion.py and scheduling_ddim.py)
-  log_prob, kl_regularizer = pipe.forward_calculate_logprob(
-      prompt_embeds=batch_promt_embeds.cuda(),
-      latents=batch_state.cuda(),
-      next_latents=batch_next_state.cuda(),
-      ts=batch_timestep.cuda(),
-      unet_copy=unet_copy,
-      is_ddp=is_ddp,
-  )
+    (
+        image,
+        kl_sum,
+    ) = pipe.forward_collect_traj_ddim(prompt=batch, is_ddp=is_ddp, unet_copy=unet_copy, soft_reward=True)
+      reward_list = []
+      for i in range(len(batch)):
+        reward, _ = calculate_reward(image[i], batch[i])
+        reward_list.append(reward)
+      reward_list = torch.stack(reward_list)
+  #   indices = get_random_indices(
+  #       state_dict["state"].shape[0], args.p_batch_size
+  #   )
+  #   batch_state = state_dict["state"][indices]
+  #   batch_next_state = state_dict["next_state"][indices]
+  #   batch_timestep = state_dict["timestep"][indices]
+  #   batch_final_reward = state_dict["final_reward"][indices]
+  #   batch_unconditional_prompt_embeds = state_dict[
+  #       "unconditional_prompt_embeds"
+  #   ][indices]
+  #   batch_guided_prompt_embeds = state_dict["guided_prompt_embeds"][indices]
+  #   batch_promt_embeds = torch.cat(
+  #       [batch_unconditional_prompt_embeds, batch_guided_prompt_embeds]
+  #   )
+  #   batch_txt_emb = state_dict["txt_emb"][indices]
+  #   batch_log_prob = state_dict["log_prob"][indices]
+  # # calculate loss from the custom function
+  # # (modified in pipeline_stable_diffusion.py and scheduling_ddim.py)
+  # log_prob, kl_regularizer = pipe.forward_calculate_logprob(
+  #     prompt_embeds=batch_promt_embeds.cuda(),
+  #     latents=batch_state.cuda(),
+  #     next_latents=batch_next_state.cuda(),
+  #     ts=batch_timestep.cuda(),
+  #     unet_copy=unet_copy,
+  #     is_ddp=is_ddp,
+  # )
   with torch.no_grad():
     if args.v_flag == 1:
       # pylint: disable=line-too-long
-      adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1]) - value_function(
+      adv = reward_list.cuda().reshape([args.p_batch_size, 1]) - value_function(
           batch_state.cuda(),
           batch_txt_emb.cuda(),
           batch_timestep.cuda()).reshape([args.p_batch_size, 1])
     else:
-      adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1])
-  ratio = torch.exp(log_prob - batch_log_prob.cuda())
-  ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
+      adv = reward_list.cuda().reshape([args.p_batch_size, 1])
+  # ratio = torch.exp(log_prob - batch_log_prob.cuda())
+  # ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
   loss = (
       -args.reward_weight
       * adv.detach().float()
-      * ratio.float().reshape([args.p_batch_size, 1])
+      # * ratio.float().reshape([args.p_batch_size, 1])
   ).mean()
   if count > args.kl_warmup:
     loss += args.kl_weight * kl_regularizer.mean()
@@ -1379,10 +1389,10 @@ def main():
     # fix batchnorm
     unet.eval()
 
-    batch = _get_batch(
-        data_iter_loader, _my_data_iterator, prompt_list, args, accelerator
-    )
-    _collect_rollout(args, pipe, unet_copy, is_ddp, batch, calculate_reward, state_dict)
+    # batch = _get_batch(
+    #     data_iter_loader, _my_data_iterator, prompt_list, args, accelerator
+    # )
+    # _collect_rollout(args, pipe, unet_copy, is_ddp, batch, calculate_reward, state_dict)
     # _trim_buffer(buffer_size, state_dict)
 
 
@@ -1412,6 +1422,9 @@ def main():
     for _ in range(args.p_step):
       optimizer.zero_grad()
       for accum_step in range(int(args.gradient_accumulation_steps)):
+        batch = _get_batch(
+            data_iter_loader, _my_data_iterator, prompt_list, args, accelerator
+        )      
         if accum_step < int(args.gradient_accumulation_steps) - 1:
           with accelerator.no_sync(unet):
             _train_policy_func(
@@ -1420,6 +1433,7 @@ def main():
                 pipe,
                 unet_copy,
                 is_ddp,
+                batch,
                 count,
                 policy_steps,
                 accelerator,
@@ -1433,6 +1447,7 @@ def main():
               pipe,
               unet_copy,
               is_ddp,
+              batch,
               count,
               policy_steps,
               accelerator,
