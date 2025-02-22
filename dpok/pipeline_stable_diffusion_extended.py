@@ -291,7 +291,7 @@ class StableDiffusionPipelineExtended(StableDiffusionPipeline):
         #   )
 
           kl_regularizer = (noise_pred - old_noise_pred) ** 2
-          kl_list.append(kl_regularizer.detach().clone().cpu())
+          kl_list.append(kl_regularizer)
 
         # call the callback, if provided
         if i == len(timesteps) - 1 or (
@@ -324,18 +324,7 @@ class StableDiffusionPipelineExtended(StableDiffusionPipeline):
 
     # unconditional_prompt_embeds, guided_prompt_embeds = prompt_embeds.chunk(2)
 
-    if soft_reward:
-      kl_sum = 0
-      # kl_path = []
-      for i in range(len(kl_list)):
-        kl_sum += kl_list[i]
-      # kl_path.append(kl_sum.clone())
-      # for i in range(1, len(kl_list)):
-      #   kl_sum -= kl_list[i - 1]
-        # kl_path.append(kl_sum.clone())
-    else:
-      # kl_path = None
-      kl_sum = 0
+    kl_list = torch.stack(kl_list)
 
     return (
         image,
@@ -343,7 +332,7 @@ class StableDiffusionPipelineExtended(StableDiffusionPipeline):
         # unconditional_prompt_embeds.detach().cpu(),
         # guided_prompt_embeds.detach().cpu(),
         # log_prob_list,
-        kl_sum,
+        kl_list,
     )
 
   # Feed transitions pairs and old model

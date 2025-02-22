@@ -931,13 +931,13 @@ def _train_policy_func(
   with torch.no_grad():
     (
         image,
-        kl_sum,
+        kl_list,
     ) = pipe.forward_collect_traj_ddim(prompt=batch, is_ddp=is_ddp, unet_copy=unet_copy, soft_reward=True)
     reward_list = []
     for i in range(len(batch)):
       reward, _ = calculate_reward(image[i], batch[i])
       reward_list.append(reward)
-    reward_list = torch.stack(reward_list)
+    reward_list = torch.stack(reward_list).detach().cpu()
   #   indices = get_random_indices(
   #       state_dict["state"].shape[0], args.p_batch_size
   #   )
@@ -980,14 +980,13 @@ def _train_policy_func(
       * adv.detach().float()
       # * ratio.float().reshape([args.p_batch_size, 1])
   ).mean()
-  if count > args.kl_warmup:
-    kl_sum = kl_sum.cuda().mean()
-    loss += args.kl_weight * kl_sum
+  # if count > args.kl_warmup:
+  #   loss += args.kl_weight * kl_list.mean()
   loss = loss / (args.gradient_accumulation_steps)
   accelerator.backward(loss)
   # logging
   # tpfdata.tot_ratio += ratio.mean().item() / policy_steps
-  tpfdata.tot_kl += kl_sum.mean().item() / policy_steps
+  tpfdata.tot_kl += kl_list.mean().item() / policy_steps
   tpfdata.tot_p_loss += loss.item() / policy_steps
 
   del (
