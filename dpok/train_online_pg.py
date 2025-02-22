@@ -929,57 +929,63 @@ def _train_policy_func(
     value_function
 ):
   """Trains the policy function."""
-  with torch.no_grad():
-    indices = get_random_indices(
-        state_dict["state"].shape[0], args.p_batch_size
+  total_samples = state_dict["state"].shape[0]
+  for start_idx in range(0, total_samples, args.p_batch_size):
+    end_idx = min(start_idx + args.p_batch_size, total_samples)
+    with torch.no_grad():
+      batch_state = state_dict["state"][start_idx:end_idx]
+      batch_next_state = state_dict["next_state"][start_idx:end_idx]
+      batch_timestep = state_dict["timestep"][start_idx:end_idx]
+      batch_final_reward = state_dict["final_reward"][start_idx:end_idx]
+      batch_unconditional_prompt_embeds = state_dict[
+          "unconditional_prompt_embeds"
+      ][start_idx:end_idx]
+      batch_guided_prompt_embeds = state_dict["guided_prompt_embeds"][start_idx:end_idx]
+      batch_promt_embeds = torch.cat(
+          [batch_unconditional_prompt_embeds, batch_guided_prompt_embeds]
+      )
+      batch_txt_emb = state_dict["txt_emb"][start_idx:end_idx]
+      batch_log_prob = state_dict["log_prob"][start_idx:end_idx]
+    # calculate loss from the custom function
+    # (modified in pipeline_stable_diffusion.py and scheduling_ddim.py)
+    _, kl_regularizer = pipe.forward_calculate_logprob(
+        prompt_embeds=batch_promt_embeds.cuda(),
+        latents=batch_state.cuda(),
+        next_latents=batch_next_state.cuda(),
+        ts=batch_timestep.cuda(),
+        unet_copy=unet_copy,
+        is_ddp=is_ddp,
     )
-    batch_state = state_dict["state"][indices]
-    batch_next_state = state_dict["next_state"][indices]
-    batch_timestep = state_dict["timestep"][indices]
-    batch_final_reward = state_dict["final_reward"][indices]
-    batch_unconditional_prompt_embeds = state_dict[
-        "unconditional_prompt_embeds"
-    ][indices]
-    batch_guided_prompt_embeds = state_dict["guided_prompt_embeds"][indices]
-    batch_promt_embeds = torch.cat(
-        [batch_unconditional_prompt_embeds, batch_guided_prompt_embeds]
-    )
-    batch_txt_emb = state_dict["txt_emb"][indices]
-    batch_log_prob = state_dict["log_prob"][indices]
-  # calculate loss from the custom function
-  # (modified in pipeline_stable_diffusion.py and scheduling_ddim.py)
-  log_prob, kl_regularizer = pipe.forward_calculate_logprob(
-      prompt_embeds=batch_promt_embeds.cuda(),
-      latents=batch_state.cuda(),
-      next_latents=batch_next_state.cuda(),
-      ts=batch_timestep.cuda(),
-      unet_copy=unet_copy,
-      is_ddp=is_ddp,
-  )
-  with torch.no_grad():
-    if args.v_flag == 1:
-      # pylint: disable=line-too-long
-      adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1]) - value_function(
-          batch_state.cuda(),
-          batch_txt_emb.cuda(),
-          batch_timestep.cuda()).reshape([args.p_batch_size, 1])
+    
+    if start_idx == 0:
+      with torch.no_grad():
+        if args.v_flag == 1:
+          # pylint: disable=line-too-long
+          adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1]) - value_function(
+              batch_state.cuda(),
+              batch_txt_emb.cuda(),
+              batch_timestep.cuda()).reshape([args.p_batch_size, 1])
+        else:
+          adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1])
+        # ratio = torch.exp(log_prob - batch_log_prob.cuda())
+        # ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
+      loss = (
+          -args.reward_weight
+          * adv.detach().float()
+          # * ratio.float().reshape([args.p_batch_size, 1])
+      ).mean()
+      if count > args.kl_warmup:
+        loss += args.kl_weight * kl_regularizer.sum()
     else:
-      adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1])
-  ratio = torch.exp(log_prob - batch_log_prob.cuda())
-  ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
-  loss = (
-      -args.reward_weight
-      * adv.detach().float()
-      * ratio.float().reshape([args.p_batch_size, 1])
-  ).mean()
-  if count > args.kl_warmup:
-    loss += args.kl_weight * kl_regularizer.mean()
-  loss = loss / (args.gradient_accumulation_steps)
-  accelerator.backward(loss)
-  # logging
-  tpfdata.tot_ratio += ratio.mean().item() / policy_steps
-  tpfdata.tot_kl += kl_regularizer.mean().item() / policy_steps
-  tpfdata.tot_p_loss += loss.item() / policy_steps
+      if count > args.kl_warmup:
+        loss = args.kl_weight * kl_regularizer.sum()
+    loss = loss / (args.gradient_accumulation_steps)
+    accelerator.backward(loss)
+
+    # logging
+    # tpfdata.tot_ratio += ratio.mean().item() / policy_steps
+    tpfdata.tot_kl += kl_regularizer.sum().item() / policy_steps
+    tpfdata.tot_p_loss += loss.item() / policy_steps
 
 
 def main():
