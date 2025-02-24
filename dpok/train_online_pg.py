@@ -992,7 +992,6 @@ def _train_policy_func(
 
 
 def main():
-  torch.autograd.set_detect_anomaly(True)
   args = parse_args()
   if args.non_ema_revision is not None:
     deprecate(
