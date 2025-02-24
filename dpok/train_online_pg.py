@@ -1418,7 +1418,7 @@ def main():
     # policy learning
     tpfdata = TrainPolicyFuncData()
     for _ in range(args.p_step):
-      # optimizer.zero_grad()
+      optimizer.zero_grad()
       for accum_step in range(int(args.gradient_accumulation_steps)):
         if accum_step < int(args.gradient_accumulation_steps) - 1:
           with accelerator.no_sync(unet):
