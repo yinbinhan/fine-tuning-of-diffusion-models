@@ -968,8 +968,8 @@ def _train_policy_func(
                 batch_timestep.cuda()).reshape([args.p_batch_size, 1])
           else:
             adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1])
-          ratio = torch.exp(log_prob - batch_log_prob.cuda())
-          # ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
+        ratio = torch.exp(log_prob - batch_log_prob.cuda())
+        # ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
         loss = (
             -args.reward_weight
             * adv.detach().float()
