@@ -958,7 +958,7 @@ def _train_policy_func(
           is_ddp=is_ddp,
       )
       
-      if start_idx == 0:
+      if start_idx % 50 < args.p_batch_size:
         with torch.no_grad():
           if args.v_flag == 1:
             # pylint: disable=line-too-long
