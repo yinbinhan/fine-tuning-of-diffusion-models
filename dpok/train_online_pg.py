@@ -949,7 +949,7 @@ def _train_policy_func(
         batch_log_prob = state_dict["log_prob"][start_idx:end_idx]
       # calculate loss from the custom function
       # (modified in pipeline_stable_diffusion.py and scheduling_ddim.py)
-      _, kl_regularizer = pipe.forward_calculate_logprob(
+      log_prob, kl_regularizer = pipe.forward_calculate_logprob(
           prompt_embeds=batch_promt_embeds.cuda(),
           latents=batch_state.cuda(),
           next_latents=batch_next_state.cuda(),
@@ -968,12 +968,12 @@ def _train_policy_func(
                 batch_timestep.cuda()).reshape([args.p_batch_size, 1])
           else:
             adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1])
-          # ratio = torch.exp(log_prob - batch_log_prob.cuda())
+          ratio = torch.exp(log_prob - batch_log_prob.cuda())
           # ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
         loss = (
             -args.reward_weight
             * adv.detach().float()
-            # * ratio.float().reshape([args.p_batch_size, 1])
+            * ratio.float().reshape([args.p_batch_size, 1])
         ).mean()
         if count > args.kl_warmup:
           loss += args.kl_weight * kl_regularizer.mean()
@@ -986,7 +986,7 @@ def _train_policy_func(
       progress_bar.update(min(args.p_batch_size, total_samples - start_idx))
 
       # logging
-      # tpfdata.tot_ratio += ratio.mean().item() / policy_steps
+      tpfdata.tot_ratio += ratio.mean().item() / policy_steps
       tpfdata.tot_kl += kl_regularizer.mean().item() / policy_steps
       tpfdata.tot_p_loss += loss.item() / policy_steps
 
