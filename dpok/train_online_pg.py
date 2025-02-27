@@ -958,7 +958,7 @@ def _train_policy_func(
           is_ddp=is_ddp,
       )
       
-      if start_idx % 50 < args.p_batch_size:
+      if start_idx % 50 == 0:
         with torch.no_grad():
           if args.v_flag == 1:
             # pylint: disable=line-too-long
@@ -969,6 +969,7 @@ def _train_policy_func(
           else:
             adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1])
         ratio = torch.exp(log_prob - batch_log_prob.cuda())
+        print("ratio", ratio.mean())
         # ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
         loss = (
             -args.reward_weight
@@ -982,11 +983,12 @@ def _train_policy_func(
           loss = args.kl_weight * kl_regularizer.mean()
       loss = loss / (args.gradient_accumulation_steps)
       accelerator.backward(loss)
+      print("kl", kl_regularizer.mean())
 
       progress_bar.update(min(args.p_batch_size, total_samples - start_idx))
 
       # logging
-      tpfdata.tot_ratio += ratio.mean().item() / policy_steps
+      # tpfdata.tot_ratio += ratio.mean().item() / policy_steps
       tpfdata.tot_kl += kl_regularizer.mean().item() / policy_steps
       tpfdata.tot_p_loss += loss.item() / policy_steps
 
@@ -1376,7 +1378,7 @@ def main():
     )
 
   count = 0
-  buffer_size = args.buffer_size
+  buffer_size = args.g_batch_size * args.num_samples
   policy_steps = args.gradient_accumulation_steps * args.p_step
   # test_batch = get_test_prompts(args.prompt_category)
   data_iter_loader = iter(data_iterator)
