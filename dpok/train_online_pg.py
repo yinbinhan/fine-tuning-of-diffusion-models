@@ -987,7 +987,7 @@ def _train_policy_func(
       progress_bar.update(min(args.p_batch_size, total_samples - start_idx))
 
       # logging
-      # tpfdata.tot_ratio += ratio.mean().item() / policy_steps
+      tpfdata.tot_ratio += ratio.mean().item() / policy_steps
       tpfdata.tot_kl += kl_regularizer.mean().item() / policy_steps
       tpfdata.tot_p_loss += loss.item() / policy_steps
 
