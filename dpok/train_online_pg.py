@@ -958,28 +958,25 @@ def _train_policy_func(
           is_ddp=is_ddp,
       )
       
-      if start_idx % 50 == 0:
-        with torch.no_grad():
-          if args.v_flag == 1:
-            # pylint: disable=line-too-long
-            adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1]) - value_function(
-                batch_state.cuda(),
-                batch_txt_emb.cuda(),
-                batch_timestep.cuda()).reshape([args.p_batch_size, 1])
-          else:
-            adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1])
-        ratio = torch.exp(log_prob - batch_log_prob.cuda())
-        # ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
-        loss = (
-            -args.reward_weight
-            * adv.detach().float()
-            * ratio.float().reshape([args.p_batch_size, 1])
-        ).mean()
-        if count > args.kl_warmup:
-          loss += args.kl_weight * kl_regularizer.mean()
-      else:
-        if count > args.kl_warmup:
-          loss = args.kl_weight * kl_regularizer.mean()
+      with torch.no_grad():
+        if args.v_flag == 1:
+          # pylint: disable=line-too-long
+          adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1]) - value_function(
+              batch_state.cuda(),
+              batch_txt_emb.cuda(),
+              batch_timestep.cuda()).reshape([args.p_batch_size, 1])
+        else:
+          adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1])
+      ratio = torch.exp(log_prob - batch_log_prob.cuda())
+      # ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
+      loss = (
+          -args.reward_weight
+          * adv.detach().float()
+          * ratio.float().reshape([args.p_batch_size, 1])
+      ).mean()
+      if count > args.kl_warmup:
+        loss += args.kl_weight * kl_regularizer.mean()
+
       loss = loss / (args.gradient_accumulation_steps)
       accelerator.backward(loss)
 
