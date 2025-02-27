@@ -959,6 +959,7 @@ def _train_policy_func(
       )
       
       if start_idx % 50 == 0:
+          if start_idx % 50 == 0:
         with torch.no_grad():
           if args.v_flag == 1:
             # pylint: disable=line-too-long
@@ -969,7 +970,6 @@ def _train_policy_func(
           else:
             adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1])
         ratio = torch.exp(log_prob - batch_log_prob.cuda())
-        print("ratio", ratio.mean().item())
         # ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
         loss = (
             -args.reward_weight
@@ -983,7 +983,6 @@ def _train_policy_func(
           loss = args.kl_weight * kl_regularizer.mean()
       loss = loss / (args.gradient_accumulation_steps)
       accelerator.backward(loss)
-      print("kl", kl_regularizer.mean().item())
 
       progress_bar.update(min(args.p_batch_size, total_samples - start_idx))
 
