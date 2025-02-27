@@ -659,7 +659,7 @@ def _update_output_dir(args):
     data_log += args.prompt_category + "/"
   learning_log = "p_lr" + str(args.learning_rate) + "_s" + str(args.p_step)
   learning_log += (
-      "_b"
+      "_bkl"
       + str(args.p_batch_size)
       + "_g"
       + str(args.gradient_accumulation_steps)
@@ -959,7 +959,6 @@ def _train_policy_func(
       )
       
       if start_idx % 50 == 0:
-          if start_idx % 50 == 0:
         with torch.no_grad():
           if args.v_flag == 1:
             # pylint: disable=line-too-long
