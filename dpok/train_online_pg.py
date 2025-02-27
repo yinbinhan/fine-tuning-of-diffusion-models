@@ -1376,7 +1376,7 @@ def main():
     )
 
   count = 0
-  buffer_size = args.g_batch_size * args.num_samples
+  buffer_size = args.g_batch_size * args.num_samples * 50
   policy_steps = args.gradient_accumulation_steps * args.p_step
   # test_batch = get_test_prompts(args.prompt_category)
   data_iter_loader = iter(data_iterator)
