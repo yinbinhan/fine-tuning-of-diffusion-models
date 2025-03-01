@@ -27,11 +27,11 @@ class DDIMSchedulerExtended(DDIMScheduler):
   """Extension of diffusers.DDIMScheduler."""
 
   def _get_variance_logprob(self, timestep, prev_timestep):
-    alpha_prod_t = self.alphas_cumprod[timestep].to(timestep.device)
+    alpha_prod_t = self.alphas_cumprod.to(timestep.device)[timestep]
     mask_a = (prev_timestep >= 0).int().to(timestep.device)
     mask_b = 1 - mask_a
     alpha_prod_t_prev = (
-        self.alphas_cumprod[prev_timestep].to(timestep.device) * mask_a
+        self.alphas_cumprod.to(timestep.device)[prev_timestep] * mask_a
         + self.final_alpha_cumprod.to(timestep.device) * mask_b
     )
     beta_prod_t = 1 - alpha_prod_t
@@ -113,12 +113,11 @@ class DDIMSchedulerExtended(DDIMScheduler):
     )
 
     # 2. compute alphas, betas
-    alpha_prod_t = self.alphas_cumprod[timestep].to(timestep.device)
-    # alpha_prod_t = alpha_prod_t.to(torch.float16)
+    alpha_prod_t = self.alphas_cumprod.to(timestep.device)[timestep]    # alpha_prod_t = alpha_prod_t.to(torch.float16)
     mask_a = (prev_timestep >= 0).int().to(timestep.device)
     mask_b = 1 - mask_a
     alpha_prod_t_prev = (
-        self.alphas_cumprod[prev_timestep].to(timestep.device) * mask_a
+        self.alphas_cumprod.to(timestep.device)[prev_timestep] * mask_a
         + self.final_alpha_cumprod.to(timestep.device) * mask_b
     )
     beta_prod_t = 1 - alpha_prod_t
