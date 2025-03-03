@@ -914,7 +914,6 @@ class TrainPolicyFuncData:
   tot_ratio: float = 0
   tot_kl: float = 0
   tot_grad_norm: float = 0
-  tot_reward: float = 0
 
 
 def _train_policy_func(
@@ -987,7 +986,6 @@ def _train_policy_func(
       tpfdata.tot_ratio += ratio.mean().item() / policy_steps
       tpfdata.tot_kl += kl_regularizer.mean().item() / policy_steps
       tpfdata.tot_p_loss += loss.item() / policy_steps
-      tpfdata.tot_reward += adv.mean().item() / policy_steps
 
 
 def main():
@@ -1463,7 +1461,6 @@ def main():
         accelerator.log({"grad norm": tpfdata.tot_grad_norm}, step=count)
         accelerator.log({"ratio": tpfdata.tot_ratio}, step=count)
         accelerator.log({"kl": tpfdata.tot_kl}, step=count)
-        accelerator.log({"reward": tpfdata.tot_reward}, step=count)
         accelerator.log({"p_loss": tpfdata.tot_p_loss}, step=count)
       torch.cuda.empty_cache()
 
