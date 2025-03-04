@@ -926,13 +926,11 @@ def _train_policy_func(
     policy_steps,
     accelerator,
     tpfdata,
-    value_function
+    value_function,
+    indices
 ):
   """Trains the policy function."""
   with torch.no_grad():
-    indices = get_random_indices(
-        state_dict["state"].shape[0], args.p_batch_size
-    )
     batch_state = state_dict["state"][indices]
     batch_next_state = state_dict["next_state"][indices]
     batch_timestep = state_dict["timestep"][indices]
@@ -1411,6 +1409,9 @@ def main():
     for _ in range(args.p_step):
       optimizer.zero_grad()
       for accum_step in range(int(args.gradient_accumulation_steps)):
+        indices = get_random_indices(
+          state_dict["state"].shape[0], args.p_batch_size
+        )
         if accum_step < int(args.gradient_accumulation_steps) - 1:
           with accelerator.no_sync(unet):
             _train_policy_func(
@@ -1424,6 +1425,7 @@ def main():
                 accelerator,
                 tpfdata,
                 value_function,
+                indices
             )
         else:
           _train_policy_func(
@@ -1436,7 +1438,8 @@ def main():
               policy_steps,
               accelerator,
               tpfdata,
-              value_function
+              value_function,
+              indices
           )
       if accelerator.sync_gradients:
         norm = accelerator.clip_grad_norm_(unet.parameters(), args.clip_norm)
