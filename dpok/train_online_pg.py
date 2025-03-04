@@ -979,7 +979,7 @@ def _train_policy_func(
       if count > args.kl_warmup:
         loss += args.kl_weight * kl_regularizer.mean()
 
-      # loss = loss / (args.gradient_accumulation_steps)
+      loss = loss / num_subbatches
       if i < num_subbatches - 1:
         with accelerator.no_sync(pipe.unet):  # skip gradient sync for micro-batch
           accelerator.backward(loss)
