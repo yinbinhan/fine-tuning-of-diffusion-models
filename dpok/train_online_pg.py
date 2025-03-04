@@ -544,6 +544,11 @@ def parse_args():
       type=float,
       default=1e-4,
   )
+  parser.add_argument(
+      "--dpok",
+      type=int,
+      default=0,
+  )
   args = parser.parse_args()
   env_local_rank = int(os.environ.get("LOCAL_RANK", -1))
   if env_local_rank != -1 and env_local_rank != args.local_rank:
@@ -659,8 +664,12 @@ def _update_output_dir(args):
     data_log += args.prompt_category + "/"
   learning_log = "p_lr" + str(args.learning_rate) + "_s" + str(args.p_step)
   learning_log += (
-      "_b"
+      "_pb"
       + str(args.p_batch_size)
+      +"_gb"
+      + str(args.g_batch_size)
+      +"_n"
+      + str(args.num_samples)
       + "_g"
       + str(args.gradient_accumulation_steps)
   )
@@ -681,6 +690,8 @@ def _update_output_dir(args):
     value_log = "_v_lr" + str(args.v_lr) + "_b" + str(args.v_batch_size)
     value_log += "_s" + str(args.v_step)
     args.output_dir += value_log
+  if args.dpok == 1:
+    args.output_dir += "_dpok"
 
 
 def _calculate_reward_ir(
