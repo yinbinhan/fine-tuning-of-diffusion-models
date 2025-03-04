@@ -676,7 +676,7 @@ def _update_output_dir(args):
     args.output_dir += "/img_reward_{}/".format(args.reward_filter)
   else:
     args.output_dir += "/prev_reward_{}/".format(args.reward_filter)
-  args.output_dir += start_log + data_log + "/" + learning_log + coeff_log
+  args.output_dir += start_log + data_log + "/" + learning_log + coeff_log + "exp"
   if args.v_flag == 1:
     value_log = "_v_lr" + str(args.v_lr) + "_b" + str(args.v_batch_size)
     value_log += "_s" + str(args.v_step)
@@ -930,8 +930,10 @@ def _train_policy_func(
 ):
   """Trains the policy function."""
   total_samples = state_dict["state"].shape[0]
+  num_subbatches = (total_samples + args.p_batch_size - 1) // args.p_batch_size
   with pipe.progress_bar(total=total_samples) as progress_bar:
-    for start_idx in range(0, total_samples, args.p_batch_size):
+    for i in range(num_subbatches):
+      start_idx = i * args.p_batch_size
       end_idx = min(start_idx + args.p_batch_size, total_samples)
       with torch.no_grad():
         batch_state = state_dict["state"][start_idx:end_idx]
@@ -977,15 +979,21 @@ def _train_policy_func(
       if count > args.kl_warmup:
         loss += args.kl_weight * kl_regularizer.mean()
 
-      loss = loss / (args.gradient_accumulation_steps)
-      accelerator.backward(loss)
+      # loss = loss / (args.gradient_accumulation_steps)
+      if i < num_subbatches - 1:
+        with accelerator.no_sync(pipe.unet):  # skip gradient sync for micro-batch
+          accelerator.backward(loss)
+      else:
+        # final sub-batch: do a normal backward, so we sync & allreduce
+        accelerator.backward(loss)
+
 
       progress_bar.update(min(args.p_batch_size, total_samples - start_idx))
 
       # logging
-      tpfdata.tot_ratio += ratio.mean().item() / policy_steps
-      tpfdata.tot_kl += kl_regularizer.mean().item() / policy_steps
-      tpfdata.tot_p_loss += loss.item() / policy_steps
+      tpfdata.tot_ratio += ratio.mean().item() / num_subbatches
+      tpfdata.tot_kl += kl_regularizer.mean().item() / num_subbatches
+      tpfdata.tot_p_loss += loss.item() / num_subbatches
 
 
 def main():
@@ -1416,34 +1424,18 @@ def main():
     tpfdata = TrainPolicyFuncData()
     for _ in range(args.p_step):
       optimizer.zero_grad()
-      for accum_step in range(int(args.gradient_accumulation_steps)):
-        if accum_step < int(args.gradient_accumulation_steps) - 1:
-          with accelerator.no_sync(unet):
-            _train_policy_func(
-                args,
-                state_dict,
-                pipe,
-                unet_copy,
-                is_ddp,
-                count,
-                policy_steps,
-                accelerator,
-                tpfdata,
-                value_function,
-            )
-        else:
-          _train_policy_func(
-              args,
-              state_dict,
-              pipe,
-              unet_copy,
-              is_ddp,
-              count,
-              policy_steps,
-              accelerator,
-              tpfdata,
-              value_function
-          )
+      _train_policy_func(
+          args,
+          state_dict,
+          pipe,
+          unet_copy,
+          is_ddp,
+          count,
+          policy_steps,
+          accelerator,
+          tpfdata,
+          value_function,
+      )
       if accelerator.sync_gradients:
         norm = accelerator.clip_grad_norm_(unet.parameters(), args.clip_norm)
       tpfdata.tot_grad_norm += norm.item() / args.p_step
