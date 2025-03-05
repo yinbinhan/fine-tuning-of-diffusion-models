@@ -1420,9 +1420,14 @@ def main():
     for _ in range(args.p_step):
       optimizer.zero_grad()
       for accum_step in range(int(args.gradient_accumulation_steps)):
-        indices = get_random_indices(
-          state_dict["state"].shape[0], args.p_batch_size
-        )
+        if args.dpok == 1:
+          indices = get_random_indices(
+              state_dict["state"].shape[0], args.p_batch_size
+            )
+        else:
+          start = accum_step * args.p_batch_size
+          end = (accum_step + 1) * args.p_batch_size
+          indices = np.arange(start, end)
         if accum_step < int(args.gradient_accumulation_steps) - 1:
           with accelerator.no_sync(unet):
             _train_policy_func(

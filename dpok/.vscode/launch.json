@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Train Online PG with Accelerate",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "accelerate.commands.launch",
+            "env": {"CUDA_VISIBLE_DEVICES":"5"},
+            "args": [
+                "--num_processes", "1",
+                "/data/yinbin/google-research/dpok/train_online_pg.py",
+                "--max_train_steps", "10",
+                "--p_step", "1",
+                "--p_batch_size", "5",
+                "--v_flag", "0",
+                "--g_batch_size", "1",
+                "--reward_weight", "1",
+                "--kl_weight", "0",
+                "--learning_rate", "3e-4",
+                "--buffer_size", "50",
+                "--num_samples", "1",
+                "--gradient_accumulation_steps", "10",
+                "--prompt_path", "/data/yinbin/google-research/dpok/dataset/drawbench/data_meta.json",
+                "--single_prompt", "A green colored rabbit.",
+                "--single_flag", "1",
+                "--ratio_clip", "0",
+                "--dpok", "1",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "python": "/data/yinbin/anaconda3/envs/dpok/bin/python",
+        }
+    ]
+}
