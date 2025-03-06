@@ -1,0 +1,84 @@
+nohup: ignoring input
+The following values were not passed to `accelerate launch` and had defaults used instead:
+	`--num_machines` was set to a value of `1`
+	`--mixed_precision` was set to a value of `'no'`
+	`--dynamo_backend` was set to a value of `'no'`
+To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+03/06/2025 13:06:56 - INFO - __main__ - Distributed environment: NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cuda
+
+Mixed precision type: fp16
+
+`text_config_dict` is provided which will be used to initialize `CLIPTextConfig`. The value `text_config["id2label"]` will be overriden.
+load checkpoint from /home/yinbin/.cache/ImageReward/ImageReward.pt
+checkpoint loaded
+Fetching 15 files:   0%|          | 0/15 [00:00<?, ?it/s]Fetching 15 files: 100%|██████████| 15/15 [00:00<00:00, 75800.67it/s]
+{'requires_safety_checker'} was not found in config. Values will be initialized to default values.
+`text_config_dict` is provided which will be used to initialize `CLIPTextConfig`. The value `text_config["id2label"]` will be overriden.
+{'projection_class_embeddings_input_dim', 'num_class_embeds', 'conv_out_kernel', 'timestep_post_act', 'upcast_attention', 'use_linear_projection', 'only_cross_attention', 'mid_block_type', 'dual_cross_attention', 'time_embedding_type', 'class_embed_type', 'resnet_time_scale_shift', 'time_cond_proj_dim', 'conv_in_kernel'} was not found in config. Values will be initialized to default values.
+{'prediction_type'} was not found in config. Values will be initialized to default values.
+{'scaling_factor'} was not found in config. Values will be initialized to default values.
+{'projection_class_embeddings_input_dim', 'num_class_embeds', 'conv_out_kernel', 'timestep_post_act', 'upcast_attention', 'use_linear_projection', 'only_cross_attention', 'mid_block_type', 'dual_cross_attention', 'time_embedding_type', 'class_embed_type', 'resnet_time_scale_shift', 'time_cond_proj_dim', 'conv_in_kernel'} was not found in config. Values will be initialized to default values.
+{'projection_class_embeddings_input_dim', 'num_class_embeds', 'conv_out_kernel', 'timestep_post_act', 'upcast_attention', 'use_linear_projection', 'only_cross_attention', 'mid_block_type', 'dual_cross_attention', 'time_embedding_type', 'class_embed_type', 'resnet_time_scale_shift', 'time_cond_proj_dim', 'conv_in_kernel'} was not found in config. Values will be initialized to default values.
+03/06/2025 13:07:15 - INFO - __main__ - ***** Running training *****
+03/06/2025 13:07:15 - INFO - __main__ -   Num Epochs = 100
+03/06/2025 13:07:15 - INFO - __main__ -   Instantaneous batch size per device = 8
+03/06/2025 13:07:15 - INFO - __main__ -   Total train batch size (w. parallel, distributed & accumulation) = 80
+03/06/2025 13:07:15 - INFO - __main__ -   Gradient Accumulation steps = 10
+03/06/2025 13:07:15 - INFO - __main__ -   Total optimization steps = 2000
+  0%|          | 0/10000 [00:00<?, ?it/s]Steps:   0%|          | 0/10000 [00:00<?, ?it/s]model is parallel: False
+
+  0%|          | 0/50 [00:00<?, ?it/s][A
+  2%|▏         | 1/50 [00:01<01:08,  1.40s/it][A
+  4%|▍         | 2/50 [00:01<00:44,  1.08it/s][A
+  6%|▌         | 3/50 [00:02<00:36,  1.29it/s][A
+  8%|▊         | 4/50 [00:03<00:32,  1.42it/s][A
+ 10%|█         | 5/50 [00:03<00:29,  1.51it/s][A
+ 12%|█▏        | 6/50 [00:04<00:28,  1.56it/s][A
+ 14%|█▍        | 7/50 [00:04<00:26,  1.60it/s][A
+ 16%|█▌        | 8/50 [00:05<00:25,  1.63it/s][A
+ 18%|█▊        | 9/50 [00:06<00:24,  1.65it/s][A
+ 20%|██        | 10/50 [00:06<00:24,  1.66it/s][A
+ 22%|██▏       | 11/50 [00:07<00:23,  1.67it/s][A
+ 24%|██▍       | 12/50 [00:07<00:22,  1.67it/s][A
+ 26%|██▌       | 13/50 [00:08<00:22,  1.68it/s][A
+ 28%|██▊       | 14/50 [00:09<00:21,  1.68it/s][A
+ 30%|███       | 15/50 [00:09<00:20,  1.68it/s][A
+ 32%|███▏      | 16/50 [00:10<00:20,  1.68it/s][A
+ 34%|███▍      | 17/50 [00:10<00:19,  1.69it/s][A
+ 36%|███▌      | 18/50 [00:11<00:18,  1.69it/s][A
+ 38%|███▊      | 19/50 [00:12<00:18,  1.69it/s][A
+ 40%|████      | 20/50 [00:12<00:17,  1.69it/s][A
+ 42%|████▏     | 21/50 [00:13<00:17,  1.69it/s][A
+ 44%|████▍     | 22/50 [00:13<00:16,  1.69it/s][A
+ 46%|████▌     | 23/50 [00:14<00:16,  1.69it/s][A
+ 48%|████▊     | 24/50 [00:15<00:15,  1.69it/s][A
+ 50%|█████     | 25/50 [00:15<00:14,  1.69it/s][A
+ 52%|█████▏    | 26/50 [00:16<00:14,  1.69it/s][A
+ 54%|█████▍    | 27/50 [00:16<00:13,  1.69it/s][A
+ 56%|█████▌    | 28/50 [00:17<00:13,  1.69it/s][A
+ 58%|█████▊    | 29/50 [00:17<00:12,  1.69it/s][A
+ 60%|██████    | 30/50 [00:18<00:11,  1.69it/s][A
+ 62%|██████▏   | 31/50 [00:19<00:11,  1.69it/s][A
+ 64%|██████▍   | 32/50 [00:19<00:10,  1.69it/s][A
+ 66%|██████▌   | 33/50 [00:20<00:10,  1.68it/s][A
+ 68%|██████▊   | 34/50 [00:20<00:09,  1.68it/s][A
+ 70%|███████   | 35/50 [00:21<00:08,  1.68it/s][A
+ 72%|███████▏  | 36/50 [00:22<00:08,  1.69it/s][A
+ 74%|███████▍  | 37/50 [00:22<00:07,  1.69it/s][A
+ 76%|███████▌  | 38/50 [00:23<00:07,  1.69it/s][A
+ 78%|███████▊  | 39/50 [00:23<00:06,  1.68it/s][A
+ 80%|████████  | 40/50 [00:24<00:05,  1.68it/s][A
+ 82%|████████▏ | 41/50 [00:25<00:05,  1.68it/s][A
+ 84%|████████▍ | 42/50 [00:25<00:04,  1.68it/s][A
+ 86%|████████▌ | 43/50 [00:26<00:04,  1.68it/s][A
+ 88%|████████▊ | 44/50 [00:26<00:03,  1.68it/s][A
+ 90%|█████████ | 45/50 [00:27<00:02,  1.68it/s][A
+ 92%|█████████▏| 46/50 [00:28<00:02,  1.68it/s][A
+ 94%|█████████▍| 47/50 [00:28<00:01,  1.68it/s][A
+ 96%|█████████▌| 48/50 [00:29<00:01,  1.68it/s][A
+ 98%|█████████▊| 49/50 [00:29<00:00,  1.68it/s][A
+100%|██████████| 50/50 [00:30<00:00,  1.68it/s][A100%|██████████| 50/50 [00:30<00:00,  1.64it/s]
