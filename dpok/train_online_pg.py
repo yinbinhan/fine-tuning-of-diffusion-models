@@ -974,8 +974,11 @@ def _train_policy_func(
           batch_timestep.cuda()).reshape([args.p_batch_size, 1])
     else:
       adv = batch_final_reward.cuda().reshape([args.p_batch_size, 1])
-  ratio = torch.exp(log_prob - batch_log_prob.cuda())
-  ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
+  if args.dpok == 1:
+    ratio = torch.exp(log_prob - batch_log_prob.cuda())
+    ratio = torch.clamp(ratio, 1.0 - args.ratio_clip, 1.0 + args.ratio_clip)
+  else:
+    ratio = torch.exp(log_prob - log_prob.detach())
   loss = (
       -args.reward_weight
       * adv.detach().float()
@@ -1425,9 +1428,9 @@ def main():
               state_dict["state"].shape[0], args.p_batch_size
             )
         else:
-          start = accum_step * args.p_batch_size
-          end = (accum_step + 1) * args.p_batch_size
-          indices = np.arange(start, end)
+          start = -accum_step * args.p_batch_size
+          end = -(accum_step + 1) * args.p_batch_size
+          indices = np.arange(end, start)
         if accum_step < int(args.gradient_accumulation_steps) - 1:
           with accelerator.no_sync(unet):
             _train_policy_func(
@@ -1477,20 +1480,20 @@ def main():
         accelerator.log({"p_loss": tpfdata.tot_p_loss}, step=count)
       torch.cuda.empty_cache()
 
-    if accelerator.sync_gradients:
-      global_step += 1
-      if global_step % args.checkpointing_steps == 0:
-        if accelerator.is_main_process:
-          save_path = os.path.join(args.output_dir, f"checkpoint-{global_step}")
-          accelerator.save_state(output_dir=save_path)
-          logger.info(f"Saved state to {save_path}")
-      print("global_step", global_step)
+      if accelerator.sync_gradients:
+        global_step += 1
+        if global_step % args.checkpointing_steps == 0:
+          if accelerator.is_main_process:
+            save_path = os.path.join(args.output_dir, f"checkpoint-{global_step}")
+            accelerator.save_state(output_dir=save_path)
+            logger.info(f"Saved state to {save_path}")
+        print("global_step", global_step)
 
-    # Save model per interval
-    if count % args.save_interval == 0:
-      accelerator.wait_for_everyone()
-      if accelerator.is_main_process:
-        _save_model(args, count, is_ddp, accelerator, unet)
+      # Save model per interval
+      if count % args.save_interval == 0:
+        accelerator.wait_for_everyone()
+        if accelerator.is_main_process:
+          _save_model(args, count, is_ddp, accelerator, unet)
 
   # Create the pipeline using the trained modules and save it.
   accelerator.wait_for_everyone()
