@@ -1,0 +1,105 @@
+nohup: ignoring input
+The following values were not passed to `accelerate launch` and had defaults used instead:
+	`--num_machines` was set to a value of `1`
+	`--mixed_precision` was set to a value of `'no'`
+	`--dynamo_backend` was set to a value of `'no'`
+To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+03/10/2025 18:45:55 - INFO - __main__ - Distributed environment: NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cuda
+
+Mixed precision type: fp16
+
+`text_config_dict` is provided which will be used to initialize `CLIPTextConfig`. The value `text_config["id2label"]` will be overriden.
+load checkpoint from /home/yinbin/.cache/ImageReward/ImageReward.pt
+checkpoint loaded
+Fetching 15 files:   0%|          | 0/15 [00:00<?, ?it/s]Fetching 15 files: 100%|██████████| 15/15 [00:00<00:00, 58416.49it/s]
+{'requires_safety_checker'} was not found in config. Values will be initialized to default values.
+{'prediction_type'} was not found in config. Values will be initialized to default values.
+`text_config_dict` is provided which will be used to initialize `CLIPTextConfig`. The value `text_config["id2label"]` will be overriden.
+{'use_linear_projection', 'projection_class_embeddings_input_dim', 'conv_out_kernel', 'dual_cross_attention', 'timestep_post_act', 'num_class_embeds', 'time_cond_proj_dim', 'time_embedding_type', 'conv_in_kernel', 'upcast_attention', 'resnet_time_scale_shift', 'mid_block_type', 'class_embed_type', 'only_cross_attention'} was not found in config. Values will be initialized to default values.
+{'scaling_factor'} was not found in config. Values will be initialized to default values.
+{'use_linear_projection', 'projection_class_embeddings_input_dim', 'conv_out_kernel', 'dual_cross_attention', 'timestep_post_act', 'num_class_embeds', 'time_cond_proj_dim', 'time_embedding_type', 'conv_in_kernel', 'upcast_attention', 'resnet_time_scale_shift', 'mid_block_type', 'class_embed_type', 'only_cross_attention'} was not found in config. Values will be initialized to default values.
+{'use_linear_projection', 'projection_class_embeddings_input_dim', 'conv_out_kernel', 'dual_cross_attention', 'timestep_post_act', 'num_class_embeds', 'time_cond_proj_dim', 'time_embedding_type', 'conv_in_kernel', 'upcast_attention', 'resnet_time_scale_shift', 'mid_block_type', 'class_embed_type', 'only_cross_attention'} was not found in config. Values will be initialized to default values.
+03/10/2025 18:46:15 - INFO - __main__ - ***** Running training *****
+03/10/2025 18:46:15 - INFO - __main__ -   Num Epochs = 100
+03/10/2025 18:46:15 - INFO - __main__ -   Instantaneous batch size per device = 8
+03/10/2025 18:46:15 - INFO - __main__ -   Total train batch size (w. parallel, distributed & accumulation) = 400
+03/10/2025 18:46:15 - INFO - __main__ -   Gradient Accumulation steps = 50
+03/10/2025 18:46:15 - INFO - __main__ -   Total optimization steps = 2000
+  0%|          | 0/2000 [00:00<?, ?it/s]Steps:   0%|          | 0/2000 [00:00<?, ?it/s]model is parallel: False
+
+  0%|          | 0/50 [00:00<?, ?it/s][A
+  2%|▏         | 1/50 [00:01<00:56,  1.16s/it][A
+  4%|▍         | 2/50 [00:01<00:31,  1.51it/s][A
+  6%|▌         | 3/50 [00:01<00:23,  2.00it/s][A
+  8%|▊         | 4/50 [00:02<00:19,  2.35it/s][A
+ 10%|█         | 5/50 [00:02<00:17,  2.60it/s][A
+ 12%|█▏        | 6/50 [00:02<00:15,  2.78it/s][A
+ 14%|█▍        | 7/50 [00:03<00:14,  2.90it/s][A
+ 16%|█▌        | 8/50 [00:03<00:14,  2.99it/s][A
+ 18%|█▊        | 9/50 [00:03<00:13,  3.06it/s][A
+ 20%|██        | 10/50 [00:03<00:12,  3.10it/s][A
+ 22%|██▏       | 11/50 [00:04<00:12,  3.13it/s][A
+ 24%|██▍       | 12/50 [00:04<00:12,  3.16it/s][A
+ 26%|██▌       | 13/50 [00:04<00:11,  3.17it/s][A
+ 28%|██▊       | 14/50 [00:05<00:11,  3.18it/s][A
+ 30%|███       | 15/50 [00:05<00:10,  3.19it/s][A
+ 32%|███▏      | 16/50 [00:05<00:10,  3.19it/s][A
+ 34%|███▍      | 17/50 [00:06<00:10,  3.20it/s][A
+ 36%|███▌      | 18/50 [00:06<00:09,  3.20it/s][A
+ 38%|███▊      | 19/50 [00:06<00:09,  3.20it/s][A
+ 40%|████      | 20/50 [00:07<00:09,  3.20it/s][A
+ 42%|████▏     | 21/50 [00:07<00:09,  3.21it/s][A
+ 44%|████▍     | 22/50 [00:07<00:08,  3.21it/s][A
+ 46%|████▌     | 23/50 [00:08<00:08,  3.21it/s][A
+ 48%|████▊     | 24/50 [00:08<00:08,  3.21it/s][A
+ 50%|█████     | 25/50 [00:08<00:07,  3.21it/s][A
+ 52%|█████▏    | 26/50 [00:08<00:07,  3.21it/s][A
+ 54%|█████▍    | 27/50 [00:09<00:07,  3.21it/s][A
+ 56%|█████▌    | 28/50 [00:09<00:06,  3.21it/s][A
+ 58%|█████▊    | 29/50 [00:09<00:06,  3.21it/s][A
+ 60%|██████    | 30/50 [00:10<00:06,  3.21it/s][A
+ 62%|██████▏   | 31/50 [00:10<00:05,  3.21it/s][A
+ 64%|██████▍   | 32/50 [00:10<00:05,  3.21it/s][A
+ 66%|██████▌   | 33/50 [00:11<00:05,  3.21it/s][A
+ 68%|██████▊   | 34/50 [00:11<00:04,  3.21it/s][A
+ 70%|███████   | 35/50 [00:11<00:04,  3.21it/s][A
+ 72%|███████▏  | 36/50 [00:12<00:04,  3.21it/s][A
+ 74%|███████▍  | 37/50 [00:12<00:04,  3.21it/s][A
+ 76%|███████▌  | 38/50 [00:12<00:03,  3.21it/s][A
+ 78%|███████▊  | 39/50 [00:13<00:03,  3.21it/s][A
+ 80%|████████  | 40/50 [00:13<00:03,  3.21it/s][A
+ 82%|████████▏ | 41/50 [00:13<00:02,  3.21it/s][A
+ 84%|████████▍ | 42/50 [00:13<00:02,  3.21it/s][A
+ 86%|████████▌ | 43/50 [00:14<00:02,  3.21it/s][A
+ 88%|████████▊ | 44/50 [00:14<00:01,  3.21it/s][A
+ 90%|█████████ | 45/50 [00:14<00:01,  3.21it/s][A
+ 92%|█████████▏| 46/50 [00:15<00:01,  3.21it/s][A
+ 94%|█████████▍| 47/50 [00:15<00:00,  3.21it/s][A
+ 96%|█████████▌| 48/50 [00:15<00:00,  3.21it/s][A
+ 98%|█████████▊| 49/50 [00:16<00:00,  3.21it/s][A
+100%|██████████| 50/50 [00:16<00:00,  3.21it/s][A100%|██████████| 50/50 [00:16<00:00,  3.04it/s]
+Traceback (most recent call last):
+  File "train_online_pg.py", line 1507, in <module>
+    main()
+  File "train_online_pg.py", line 1407, in main
+    value_function, state_dict, accelerator, args
+  File "train_online_pg.py", line 897, in _train_value_func
+    indices = get_random_indices(state_dict["state"].shape[0], args.v_batch_size)
+  File "train_online_pg.py", line 583, in get_random_indices
+    return np.random.choice(num_indices, size=sample_size, replace=False)
+  File "mtrand.pyx", line 965, in numpy.random.mtrand.RandomState.choice
+ValueError: Cannot take a larger sample than population when 'replace=False'
+Steps:   0%|          | 0/2000 [00:17<?, ?it/s]Traceback (most recent call last):
+  File "/data/yinbin/anaconda3/envs/dpok/bin/accelerate", line 8, in <module>
+    sys.exit(main())
+  File "/data/yinbin/anaconda3/envs/dpok/lib/python3.7/site-packages/accelerate/commands/accelerate_cli.py", line 45, in main
+    args.func(args)
+  File "/data/yinbin/anaconda3/envs/dpok/lib/python3.7/site-packages/accelerate/commands/launch.py", line 915, in launch_command
+    simple_launcher(args)
+  File "/data/yinbin/anaconda3/envs/dpok/lib/python3.7/site-packages/accelerate/commands/launch.py", line 578, in simple_launcher
+    raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
+subprocess.CalledProcessError: Command '['/data/yinbin/anaconda3/envs/dpok/bin/python', 'train_online_pg.py', '--max_train_steps', '2000', '--p_step', '1', '--p_batch_size', '5', '--v_flag', '1', '--g_batch_size', '1', '--reward_weight', '10', '--kl_weight', '0.01', '--learning_rate', '3e-4', '--gradient_accumulation_steps', '50', '--buffer_size', '500', '--num_samples', '5', '--single_prompt', 'Four wolves in the park.', '--ratio_clip', '1e-4', '--dpok', '0']' returned non-zero exit status 1.

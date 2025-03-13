@@ -17,7 +17,7 @@
                 "--g_batch_size", "1",
                 "--reward_weight", "10",
                 "--kl_weight", "0.01",
-                "--learning_rate", "1e-5",
+                "--learning_rate", "3e-4",
                 "--buffer_size", "1000",
                 "--num_samples", "10",
                 "--gradient_accumulation_steps", "10",
