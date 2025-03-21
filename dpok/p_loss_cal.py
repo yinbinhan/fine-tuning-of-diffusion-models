@@ -30,6 +30,7 @@ from scheduling_ddim_extended import DDIMSchedulerExtended
 import utils
 from diffusers import UNet2DConditionModel
 import pandas as pd
+import os
 
 
 def _collect_rollout(args, pipe, is_ddp, batch, calculate_reward, state_dict):
@@ -174,7 +175,7 @@ def _calculate_loss(args,
         )
   print("loss", loss)
 
-def model_eval(args, model_path):
+def model_eval(args, model_path, step):
   torch.manual_seed(args.seed)
   torch.cuda.manual_seed(args.seed)
   torch.backends.cudnn.deterministic = True
@@ -252,17 +253,18 @@ def model_eval(args, model_path):
   state_dict["kl"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
   state_dict["loss"] = _map_cpu(torch.FloatTensor().to(weight_dtype))
 
-  for i in range(1):
+  for i in range(5):
     _collect_rollout(args, pipe, False, prompt_list, calculate_reward, state_dict)
     _calculate_loss(args, state_dict, pipe, unet_copy, i*500)
   
   row_data = {
-        "loss_mean": state_dict['loss'].mean(), 
-        "loss_std": state_dict['loss'].std(),
-        "kl_mean": state_dict['kl'].mean(), 
-        "kl_std": state_dict['kl'].std(), 
-        "reward_mean": state_dict['final_reward'].mean(), 
-        "reward_std": state_dict['final_reward'].std()
+        "step": step,
+        "loss_mean": state_dict['loss'].mean().item(), 
+        "loss_std": state_dict['loss'].std().item(),
+        "kl_mean": state_dict['kl'].mean().item(), 
+        "kl_std": state_dict['kl'].std().item(), 
+        "reward_mean": state_dict['final_reward'].mean().item(), 
+        "reward_std": state_dict['final_reward'].std().item()
     }
   
   return row_data
@@ -343,9 +345,25 @@ def parse_args():
 if __name__ == "__main__":
   args = parse_args()
   results = []
-  model_path = args.model_path + "/save_999"
-  data = model_eval(args, model_path)
-  results.append(data)
+
+  for folder_name in os.listdir(args.model_path):
+        subfolder_path = os.path.join(args.model_path, folder_name)
+
+        # Check it’s a directory and starts with "save_"
+        if os.path.isdir(subfolder_path) and folder_name.startswith("save_"):
+            # parse out the number after "save_"
+            step_str = folder_name[len("save_"):]
+            try:
+                step = int(step_str)
+            except ValueError:
+                # if it isn't a valid integer, skip
+                continue
+            print(f"Evaluating model in: {subfolder_path}")
+#             # Step 2: Evaluate this model
+            data = model_eval(args, subfolder_path, step)
+#             # Step 3: Collect results
+            results.append(data)
   df = pd.DataFrame(results)
-  df.to_csv(model_path + "/metrics.csv", index=False)
+
+  df.to_csv(args.model_path + "/model_eval.csv", index=False)
   
