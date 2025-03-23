@@ -1,0 +1,48 @@
+nohup: ignoring input
+The following values were not passed to `accelerate launch` and had defaults used instead:
+	`--num_machines` was set to a value of `1`
+	`--mixed_precision` was set to a value of `'no'`
+	`--dynamo_backend` was set to a value of `'no'`
+To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+03/23/2025 11:25:24 - INFO - __main__ - Distributed environment: NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cuda
+
+Mixed precision type: fp16
+
+`text_config_dict` is provided which will be used to initialize `CLIPTextConfig`. The value `text_config["id2label"]` will be overriden.
+load checkpoint from /home/yinbin/.cache/ImageReward/ImageReward.pt
+checkpoint loaded
+Fetching 15 files:   0%|          | 0/15 [00:00<?, ?it/s]Fetching 15 files: 100%|██████████| 15/15 [00:00<00:00, 52736.43it/s]
+{'requires_safety_checker'} was not found in config. Values will be initialized to default values.
+{'scaling_factor'} was not found in config. Values will be initialized to default values.
+{'projection_class_embeddings_input_dim', 'timestep_post_act', 'time_embedding_type', 'mid_block_type', 'use_linear_projection', 'only_cross_attention', 'num_class_embeds', 'upcast_attention', 'conv_in_kernel', 'class_embed_type', 'dual_cross_attention', 'resnet_time_scale_shift', 'time_cond_proj_dim', 'conv_out_kernel'} was not found in config. Values will be initialized to default values.
+`text_config_dict` is provided which will be used to initialize `CLIPTextConfig`. The value `text_config["id2label"]` will be overriden.
+{'prediction_type'} was not found in config. Values will be initialized to default values.
+{'projection_class_embeddings_input_dim', 'timestep_post_act', 'time_embedding_type', 'mid_block_type', 'use_linear_projection', 'only_cross_attention', 'num_class_embeds', 'upcast_attention', 'conv_in_kernel', 'class_embed_type', 'dual_cross_attention', 'resnet_time_scale_shift', 'time_cond_proj_dim', 'conv_out_kernel'} was not found in config. Values will be initialized to default values.
+{'projection_class_embeddings_input_dim', 'timestep_post_act', 'time_embedding_type', 'mid_block_type', 'use_linear_projection', 'only_cross_attention', 'num_class_embeds', 'upcast_attention', 'conv_in_kernel', 'class_embed_type', 'dual_cross_attention', 'resnet_time_scale_shift', 'time_cond_proj_dim', 'conv_out_kernel'} was not found in config. Values will be initialized to default values.
+03/23/2025 11:25:49 - INFO - __main__ - ***** Running training *****
+03/23/2025 11:25:49 - INFO - __main__ -   Num Epochs = 100
+03/23/2025 11:25:49 - INFO - __main__ -   Instantaneous batch size per device = 8
+03/23/2025 11:25:49 - INFO - __main__ -   Total train batch size (w. parallel, distributed & accumulation) = 80
+03/23/2025 11:25:49 - INFO - __main__ -   Gradient Accumulation steps = 10
+03/23/2025 11:25:49 - INFO - __main__ -   Total optimization steps = 1000
+  0%|          | 0/10000 [00:00<?, ?it/s]Steps:   0%|          | 0/10000 [00:00<?, ?it/s]model is parallel: False
+
+  0%|          | 0/50 [00:00<?, ?it/s][A
+  2%|▏         | 1/50 [00:01<01:07,  1.38s/it][A
+  4%|▍         | 2/50 [00:01<00:43,  1.09it/s][A
+  6%|▌         | 3/50 [00:02<00:36,  1.30it/s][A
+  8%|▊         | 4/50 [00:03<00:32,  1.43it/s][A
+ 10%|█         | 5/50 [00:03<00:29,  1.52it/s][A
+ 12%|█▏        | 6/50 [00:04<00:27,  1.57it/s][A
+ 14%|█▍        | 7/50 [00:04<00:26,  1.61it/s][A
+ 16%|█▌        | 8/50 [00:05<00:25,  1.63it/s][A
+ 18%|█▊        | 9/50 [00:06<00:24,  1.65it/s][A
+ 20%|██        | 10/50 [00:06<00:24,  1.66it/s][A
+ 22%|██▏       | 11/50 [00:07<00:23,  1.67it/s][A
+ 24%|██▍       | 12/50 [00:07<00:22,  1.67it/s][A
+ 26%|██▌       | 13/50 [00:08<00:22,  1.68it/s][A
+ 28%|██▊       | 14/50 [00:09<00:21,  1.68it/s][A

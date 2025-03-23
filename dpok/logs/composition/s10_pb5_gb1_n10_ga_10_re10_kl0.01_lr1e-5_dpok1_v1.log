@@ -1,0 +1,207 @@
+nohup: ignoring input
+The following values were not passed to `accelerate launch` and had defaults used instead:
+	`--num_machines` was set to a value of `1`
+	`--mixed_precision` was set to a value of `'no'`
+	`--dynamo_backend` was set to a value of `'no'`
+To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+03/23/2025 11:21:05 - INFO - __main__ - Distributed environment: NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cuda
+
+Mixed precision type: fp16
+
+`text_config_dict` is provided which will be used to initialize `CLIPTextConfig`. The value `text_config["id2label"]` will be overriden.
+load checkpoint from /home/yinbin/.cache/ImageReward/ImageReward.pt
+checkpoint loaded
+Fetching 15 files:   0%|          | 0/15 [00:00<?, ?it/s]Fetching 15 files: 100%|██████████| 15/15 [00:00<00:00, 16119.54it/s]
+{'requires_safety_checker'} was not found in config. Values will be initialized to default values.
+`text_config_dict` is provided which will be used to initialize `CLIPTextConfig`. The value `text_config["id2label"]` will be overriden.
+{'prediction_type'} was not found in config. Values will be initialized to default values.
+{'scaling_factor'} was not found in config. Values will be initialized to default values.
+{'num_class_embeds', 'mid_block_type', 'only_cross_attention', 'conv_out_kernel', 'use_linear_projection', 'time_embedding_type', 'projection_class_embeddings_input_dim', 'class_embed_type', 'conv_in_kernel', 'resnet_time_scale_shift', 'timestep_post_act', 'upcast_attention', 'dual_cross_attention', 'time_cond_proj_dim'} was not found in config. Values will be initialized to default values.
+{'num_class_embeds', 'mid_block_type', 'only_cross_attention', 'conv_out_kernel', 'use_linear_projection', 'time_embedding_type', 'projection_class_embeddings_input_dim', 'class_embed_type', 'conv_in_kernel', 'resnet_time_scale_shift', 'timestep_post_act', 'upcast_attention', 'dual_cross_attention', 'time_cond_proj_dim'} was not found in config. Values will be initialized to default values.
+{'num_class_embeds', 'mid_block_type', 'only_cross_attention', 'conv_out_kernel', 'use_linear_projection', 'time_embedding_type', 'projection_class_embeddings_input_dim', 'class_embed_type', 'conv_in_kernel', 'resnet_time_scale_shift', 'timestep_post_act', 'upcast_attention', 'dual_cross_attention', 'time_cond_proj_dim'} was not found in config. Values will be initialized to default values.
+03/23/2025 11:21:32 - INFO - __main__ - ***** Running training *****
+03/23/2025 11:21:32 - INFO - __main__ -   Num Epochs = 100
+03/23/2025 11:21:32 - INFO - __main__ -   Instantaneous batch size per device = 8
+03/23/2025 11:21:32 - INFO - __main__ -   Total train batch size (w. parallel, distributed & accumulation) = 80
+03/23/2025 11:21:32 - INFO - __main__ -   Gradient Accumulation steps = 10
+03/23/2025 11:21:32 - INFO - __main__ -   Total optimization steps = 1000
+  0%|          | 0/10000 [00:00<?, ?it/s]Steps:   0%|          | 0/10000 [00:00<?, ?it/s]model is parallel: False
+
+  0%|          | 0/50 [00:00<?, ?it/s][A
+  2%|▏         | 1/50 [00:01<01:10,  1.43s/it][A
+  4%|▍         | 2/50 [00:02<00:45,  1.07it/s][A
+  6%|▌         | 3/50 [00:02<00:36,  1.28it/s][A
+  8%|▊         | 4/50 [00:03<00:32,  1.42it/s][A
+ 10%|█         | 5/50 [00:03<00:29,  1.51it/s][A
+ 12%|█▏        | 6/50 [00:04<00:28,  1.57it/s][A
+ 14%|█▍        | 7/50 [00:04<00:26,  1.61it/s][A
+ 16%|█▌        | 8/50 [00:05<00:25,  1.63it/s][A
+ 18%|█▊        | 9/50 [00:06<00:24,  1.65it/s][A
+ 20%|██        | 10/50 [00:06<00:24,  1.66it/s][A
+ 22%|██▏       | 11/50 [00:07<00:23,  1.67it/s][A
+ 24%|██▍       | 12/50 [00:07<00:22,  1.68it/s][A
+ 26%|██▌       | 13/50 [00:08<00:21,  1.68it/s][A
+ 28%|██▊       | 14/50 [00:09<00:21,  1.68it/s][A
+ 30%|███       | 15/50 [00:09<00:20,  1.69it/s][A
+ 32%|███▏      | 16/50 [00:10<00:20,  1.69it/s][A
+ 34%|███▍      | 17/50 [00:10<00:19,  1.69it/s][A
+ 36%|███▌      | 18/50 [00:11<00:18,  1.69it/s][A
+ 38%|███▊      | 19/50 [00:12<00:18,  1.69it/s][A
+ 40%|████      | 20/50 [00:12<00:17,  1.69it/s][A
+ 42%|████▏     | 21/50 [00:13<00:17,  1.69it/s][A
+ 44%|████▍     | 22/50 [00:13<00:16,  1.69it/s][A
+ 46%|████▌     | 23/50 [00:14<00:15,  1.69it/s][A
+ 48%|████▊     | 24/50 [00:15<00:15,  1.69it/s][A
+ 50%|█████     | 25/50 [00:15<00:14,  1.69it/s][A
+ 52%|█████▏    | 26/50 [00:16<00:14,  1.69it/s][A
+ 54%|█████▍    | 27/50 [00:16<00:13,  1.69it/s][A
+ 56%|█████▌    | 28/50 [00:17<00:12,  1.69it/s][A
+ 58%|█████▊    | 29/50 [00:17<00:12,  1.69it/s][A
+ 60%|██████    | 30/50 [00:18<00:11,  1.69it/s][A
+ 62%|██████▏   | 31/50 [00:19<00:11,  1.69it/s][A
+ 64%|██████▍   | 32/50 [00:19<00:10,  1.69it/s][A
+ 66%|██████▌   | 33/50 [00:20<00:10,  1.69it/s][A
+ 68%|██████▊   | 34/50 [00:20<00:09,  1.69it/s][A
+ 70%|███████   | 35/50 [00:21<00:08,  1.69it/s][A
+ 72%|███████▏  | 36/50 [00:22<00:08,  1.69it/s][A
+ 74%|███████▍  | 37/50 [00:22<00:07,  1.69it/s][A
+ 76%|███████▌  | 38/50 [00:23<00:07,  1.69it/s][A
+ 78%|███████▊  | 39/50 [00:23<00:06,  1.69it/s][A
+ 80%|████████  | 40/50 [00:24<00:05,  1.69it/s][A
+ 82%|████████▏ | 41/50 [00:25<00:05,  1.69it/s][A
+ 84%|████████▍ | 42/50 [00:25<00:04,  1.69it/s][A
+ 86%|████████▌ | 43/50 [00:26<00:04,  1.69it/s][A
+ 88%|████████▊ | 44/50 [00:26<00:03,  1.69it/s][A
+ 90%|█████████ | 45/50 [00:27<00:02,  1.69it/s][A
+ 92%|█████████▏| 46/50 [00:28<00:02,  1.69it/s][A
+ 94%|█████████▍| 47/50 [00:28<00:01,  1.69it/s][A
+ 96%|█████████▌| 48/50 [00:29<00:01,  1.69it/s][A
+ 98%|█████████▊| 49/50 [00:29<00:00,  1.69it/s][A
+100%|██████████| 50/50 [00:30<00:00,  1.69it/s][A100%|██████████| 50/50 [00:30<00:00,  1.64it/s]
+Model weights saved in online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0/pytorch_lora_weights.bin
+Model weights saved in online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0/pytorch_lora_weights.bin
+Model weights saved in online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0/pytorch_lora_weights.bin
+Model weights saved in online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0/pytorch_lora_weights.bin
+Model weights saved in online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0/pytorch_lora_weights.bin
+Model weights saved in online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0/pytorch_lora_weights.bin
+Model weights saved in online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0/pytorch_lora_weights.bin
+Model weights saved in online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0/pytorch_lora_weights.bin
+Model weights saved in online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0/pytorch_lora_weights.bin
+Model weights saved in online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0/pytorch_lora_weights.bin
+value_loss 0.681667721271515
+count: [0 / 1000]
+train_reward 0.243896484375
+grad norm 0.004179676249623299 ratio 0.09999915659427644
+kl 0.0 p_loss -0.027747920379042623
+global_step 1
+Saving model to online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0
+count: [0 / 1000]
+train_reward 0.243896484375
+grad norm 0.00831957869231701 ratio 0.19999888181686398
+kl 1.5109777450561526e-06 p_loss -0.048626115247607224
+global_step 2
+Saving model to online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0
+count: [0 / 1000]
+train_reward 0.243896484375
+grad norm 0.011665092408657075 ratio 0.29999882638454434
+kl 3.415942192077637e-06 p_loss -0.05445752896368503
+global_step 3
+Saving model to online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0
+count: [0 / 1000]
+train_reward 0.243896484375
+grad norm 0.015321618318557741 ratio 0.39999889254570004
+kl 5.129575729370117e-06 p_loss -0.08100656738970427
+global_step 4
+Saving model to online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0
+count: [0 / 1000]
+train_reward 0.243896484375
+grad norm 0.01962482295930386 ratio 0.4999981671571732
+kl 7.4023008346557624e-06 p_loss -0.09422222164925184
+global_step 5
+Saving model to online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0
+count: [0 / 1000]
+train_reward 0.243896484375
+grad norm 0.02324565351009369 ratio 0.5999978786706923
+kl 9.70125198364258e-06 p_loss -0.11733802986796944
+global_step 6
+Saving model to online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0
+count: [0 / 1000]
+train_reward 0.243896484375
+grad norm 0.027170175313949586 ratio 0.6999973267316817
+kl 1.2573599815368653e-05 p_loss -0.13194094286765903
+global_step 7
+Saving model to online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0
+count: [0 / 1000]
+train_reward 0.243896484375
+grad norm 0.030715281516313555 ratio 0.7999973648786544
+kl 1.4954805374145508e-05 p_loss -0.15205552028026434
+global_step 8
+Saving model to online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0
+count: [0 / 1000]
+train_reward 0.243896484375
+grad norm 0.034700514003634456 ratio 0.8999967908859251
+kl 1.8404126167297366e-05 p_loss -0.15587149427738037
+global_step 9
+Saving model to online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0
+count: [0 / 1000]
+train_reward 0.243896484375
+grad norm 0.03859265483915806 ratio 0.9999962741136549
+kl 2.135157585144043e-05 p_loss -0.17931775891687718
+global_step 10
+Saving model to online_model/img_reward_0//pre_train/single_prompt/A_cat_and_a_dog.//p_lr1e-05_s10_pb5_gb1_n10_g10_l4_kl0.01_re10.0_v_lr0.0001_b256_s5_dpok/save_0
+
+  0%|          | 0/50 [00:00<?, ?it/s][A
+  2%|▏         | 1/50 [00:00<00:38,  1.28it/s][A
+  4%|▍         | 2/50 [00:01<00:32,  1.49it/s][A
+  6%|▌         | 3/50 [00:01<00:29,  1.57it/s][A
+  8%|▊         | 4/50 [00:02<00:28,  1.62it/s][A
+ 10%|█         | 5/50 [00:03<00:27,  1.64it/s][A
+ 12%|█▏        | 6/50 [00:03<00:26,  1.65it/s][A
+ 14%|█▍        | 7/50 [00:04<00:25,  1.67it/s][A
+ 16%|█▌        | 8/50 [00:04<00:25,  1.67it/s][A
+ 18%|█▊        | 9/50 [00:05<00:24,  1.68it/s][A
+ 20%|██        | 10/50 [00:06<00:23,  1.68it/s][A
+ 22%|██▏       | 11/50 [00:06<00:23,  1.68it/s][A
+ 24%|██▍       | 12/50 [00:07<00:22,  1.68it/s][A
+ 26%|██▌       | 13/50 [00:07<00:21,  1.68it/s][A
+ 28%|██▊       | 14/50 [00:08<00:21,  1.68it/s][A
+ 30%|███       | 15/50 [00:09<00:20,  1.68it/s][A
+ 32%|███▏      | 16/50 [00:09<00:20,  1.68it/s][A
+ 34%|███▍      | 17/50 [00:10<00:19,  1.68it/s][A
+ 36%|███▌      | 18/50 [00:10<00:18,  1.68it/s][A
+ 38%|███▊      | 19/50 [00:11<00:18,  1.68it/s][A
+ 40%|████      | 20/50 [00:12<00:17,  1.68it/s][A
+ 42%|████▏     | 21/50 [00:12<00:17,  1.68it/s][A
+ 44%|████▍     | 22/50 [00:13<00:16,  1.68it/s][A
+ 46%|████▌     | 23/50 [00:13<00:16,  1.68it/s][A
+ 48%|████▊     | 24/50 [00:14<00:15,  1.68it/s][A
+ 50%|█████     | 25/50 [00:15<00:14,  1.68it/s][A
+ 52%|█████▏    | 26/50 [00:15<00:14,  1.68it/s][A
+ 54%|█████▍    | 27/50 [00:16<00:13,  1.68it/s][A
+ 56%|█████▌    | 28/50 [00:16<00:13,  1.69it/s][A
+ 58%|█████▊    | 29/50 [00:17<00:12,  1.68it/s][A
+ 60%|██████    | 30/50 [00:17<00:11,  1.68it/s][A
+ 62%|██████▏   | 31/50 [00:18<00:11,  1.69it/s][A
+ 64%|██████▍   | 32/50 [00:19<00:10,  1.69it/s][A
+ 66%|██████▌   | 33/50 [00:19<00:10,  1.69it/s][A
+ 68%|██████▊   | 34/50 [00:20<00:09,  1.68it/s][A
+ 70%|███████   | 35/50 [00:20<00:08,  1.68it/s][A
+ 72%|███████▏  | 36/50 [00:21<00:08,  1.68it/s][A
+ 74%|███████▍  | 37/50 [00:22<00:07,  1.68it/s][A
+ 76%|███████▌  | 38/50 [00:22<00:07,  1.68it/s][A
+ 78%|███████▊  | 39/50 [00:23<00:06,  1.68it/s][A
+ 80%|████████  | 40/50 [00:23<00:05,  1.68it/s][A
+ 82%|████████▏ | 41/50 [00:24<00:05,  1.68it/s][A
+ 84%|████████▍ | 42/50 [00:25<00:04,  1.68it/s][A
+ 86%|████████▌ | 43/50 [00:25<00:04,  1.68it/s][A
+ 88%|████████▊ | 44/50 [00:26<00:03,  1.68it/s][A
+ 90%|█████████ | 45/50 [00:26<00:02,  1.68it/s][A
+ 92%|█████████▏| 46/50 [00:27<00:02,  1.68it/s][A
+ 94%|█████████▍| 47/50 [00:28<00:01,  1.68it/s][A
+ 96%|█████████▌| 48/50 [00:28<00:01,  1.68it/s][A
+ 98%|█████████▊| 49/50 [00:29<00:00,  1.68it/s][A
+100%|██████████| 50/50 [00:29<00:00,  1.68it/s][A100%|██████████| 50/50 [00:29<00:00,  1.67it/s]
