@@ -35,10 +35,10 @@ def main(args):
       "runwayml/stable-diffusion-v1-5"
   )
   pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
-  pipe.unet.load_attn_procs(model_path)
+  # pipe.unet.load_attn_procs(model_path)
   pipe.to("cuda")
-  prompt_list = [args.prompt for i in range(10)]
-  for i in range(1):
+  prompt_list = [args.prompt for i in range(50)]
+  for i in range(50):
     images = pipe(prompt=prompt_list[i], eta=1.0).images
     image = images[0]
 
@@ -50,5 +50,5 @@ if __name__ == "__main__":
   parser.add_argument("--prompt", default="A green colored rabbit.")
   parser.add_argument("--model-path", default="./test")
   parser.add_argument("--seed", default=0, type=int)
-  parser.add_argument("--save-path", default="/data/yinbin/google-research/dpok/img/count/dpok_baseline")
+  parser.add_argument("--save-path", default="./test")
   main(parser.parse_args())
