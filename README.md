@@ -1,33 +1,28 @@
-# Google Research
+# Stochastic Control for Fine-tuning Diffusion Models
 
-This repository contains code released by
-[Google Research](https://research.google).
+Code for paper: [Stochastic Control for Fine-tuning Diffusion Models: Optimality, Regularity, and Convergence](https://arxiv.org/abs/2412.18164)
 
-All datasets in this repository are released under the CC BY 4.0 International
-license, which can be found here:
-https://creativecommons.org/licenses/by/4.0/legalcode.  All source files in this
-repository are released under the Apache 2.0 license, the text of which can be
-found in the LICENSE file.
+This code is based on [DPOK](https://github.com/google-research/google-research/tree/master/dpok) 
 
----
+## Env Installation
 
-Because the repo is large, we recommend you download only the subdirectory of
-interest:
+Follow the DPOK to install the environment.
 
-* Use GitHub editor to open the project. To open the editor change the url from
-github.com to github.dev in the address bar.
-* In the left navigation panel, right-click on the folder of interest and select
-download.
+## Training
 
-If you'd like to submit a pull request, you'll need to clone the repository;
-we recommend making a shallow clone (without history).
+### For a single prompt
 
-```
-git clone git@github.com:google-research/google-research.git --depth=1
-```
+'''
+accelerate launch --num_processes=1  train_online_pg.py --max_train_steps 1000 --p_step 1 --p_batch_size 5 --v_flag 1 --g_batch_size 1 --reward_weight 10 --kl_weight 0.01 --learning_rate 3e-4 --gradient_accumulation_steps 100 --buffer_size 1000 --num_samples 10 --single_prompt "A green colored rabbit." --ratio_clip 1e-4 --dpok 0
+'''
 
----
+Compared to DPOK, we sample 10 trajectories for each gradient update and disable the replay buffer.
 
-*Disclaimer: This is not an official Google product.*
+## Test
 
-Updated in 2023.
+Put the lora weights under ./test, and run test.py --prompt "A green colored rabbit.". One can modify the test prompt and model path as needed in the arguments.
+
+
+
+
+Updated in Aug 2025.
