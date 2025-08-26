@@ -6,7 +6,7 @@ This repository builds upon [DPOK](https://github.com/google-research/google-res
 
 ## Env Installation
 
-Follow the instructions in the DPOK to set up the environment.
+Follow the [instructions](https://github.com/google-research/google-research/tree/master/dpok#env-installation) in the DPOK to set up the environment.
 
 ## Training
 
