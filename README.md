@@ -24,7 +24,17 @@ accelerate launch --num_processes=1  train_online_pg.py --max_train_steps 1000 -
 
 Put the lora weights under ./test, and run test.py --prompt "A green colored rabbit.". One can modify the test prompt and model path as needed in the arguments.
 
+## Citation
 
+If you find this code useful, please cite:
 
+```bibtex
+@inproceedings{han2025stochastic,
+  title={Stochastic Control for Fine-tuning Diffusion Models: Optimality, Regularity, and Convergence},
+  author={Han, Yinbin and Razaviyayn, Meisam and Xu, Renyuan},
+  booktitle={International Conference on Machine Learning (ICML)},
+  year={2025}
+}
+```
 
 Last updated: August 2025
